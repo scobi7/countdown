@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Countdown to Oct 10, 9:00 AM</title>
+  <style>
+    :root {
+      --overlay: rgba(0, 0, 0, 0.45); /* darkens gif so text is readable */
+      --panel: rgba(0, 0, 0, 0.28);  /* subtle panel behind text */
+      --text: #f7f7f7;
+      --accent: #ffd166;
+    }
+
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      background: #000; /* fallback while gif loads */
+    }
+
+    /* Full-screen gif background */
+    .bg {
+      position: fixed;
+      inset: 0;
+      background: url('giphy.gif') center / 98% no-repeat fixed;
+      z-index: -2;
+    }
+
+    /* Dark overlay for contrast */
+    .bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--overlay);
+    }
+
+    /* Content wrapper with subtle blur so text pops but the gif shows through */
+    .wrap {
+      max-width: min(720px, 92vw);
+      padding: clamp(1.25rem, 3vw, 2rem);
+      border-radius: 16px;
+      background: var(--panel);
+      backdrop-filter: blur(2px);
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+
+    h1 {
+      margin: 0 0 .5rem;
+      font-weight: 700;
+      letter-spacing: .3px;
+      text-shadow: 0 1px 2px rgba(0,0,0,.6);
+    }
+
+    p { margin: 0 0 1rem; opacity: .9; }
+
+    .timer { 
+      display: grid;
+      grid-template-columns: repeat(4, minmax(70px, 1fr));
+      gap: clamp(.5rem, 2vw, 1rem);
+      margin-top: .75rem;
+    }
+
+    .cell {
+      padding: .75rem .5rem;
+      border-radius: 12px;
+      background: rgba(255,255,255,.08);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 6px 18px rgba(0,0,0,.25);
+    }
+
+    .value {
+      display: block;
+      font: 700 clamp(1.6rem, 6vw, 3rem) / 1.1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      letter-spacing: .5px;
+      text-shadow: 0 2px 6px rgba(0,0,0,.55);
+    }
+
+    .label {
+      display: block;
+      margin-top: .25rem;
+      font-size: clamp(.75rem, 2.4vw, .95rem);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: .9;
+      color: var(--accent);
+    }
+
+    footer { margin-top: 1rem; opacity: .85; font-size: .9rem; }
+
+    @media (max-width: 420px) {
+      .timer { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+
+  <main class="wrap" role="main">
+    <h1>Countdown until this is us</h1>
+
+    <section class="timer" aria-label="Countdown timer">
+      <div class="cell" aria-live="polite" aria-atomic="true">
+        <span id="days" class="value">--</span>
+        <span class="label">Days</span>
+      </div>
+      <div class="cell" aria-live="polite" aria-atomic="true">
+        <span id="hours" class="value">--</span>
+        <span class="label">Hours</span>
+      </div>
+      <div class="cell" aria-live="polite" aria-atomic="true">
+        <span id="minutes" class="value">--</span>
+        <span class="label">Minutes</span>
+      </div>
+      <div class="cell" aria-live="polite" aria-atomic="true">
+        <span id="seconds" class="value">--</span>
+        <span class="label">Seconds</span>
+      </div>
+    </section>
+
+    <footer id="note"></footer>
+  </main>
+
+  <script>
+    // Target: October (month index 9 because Date months are 0-based)
+    function getTarget(now = new Date()) {
+      let target = new Date(now.getFullYear(), 9, 10, 9, 0, 0, 0);
+      if (now > target) {
+        // If we've passed this year's Oct 10, count down to next year's
+        target = new Date(now.getFullYear() + 1, 9, 10, 9, 0, 0, 0);
+      }
+      return target;
+    }
+
+    const daysEl = document.getElementById('days');
+    const hoursEl = document.getElementById('hours');
+    const minsEl = document.getElementById('minutes');
+    const secsEl = document.getElementById('seconds');
+    const noteEl = document.getElementById('note');
+
+    const target = getTarget();
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function tick() {
+      const now = new Date();
+      const diff = target - now;
+
+      if (diff <= 0) {
+        daysEl.textContent = '00';
+        hoursEl.textContent = '00';
+        minsEl.textContent = '00';
+        secsEl.textContent = '00';
+        noteEl.textContent = "It's time!";
+        clearInterval(timer);
+        return;
+      }
+
+      const seconds = Math.floor(diff / 1000);
+      const days = Math.floor(seconds / 86400);
+      const hours = Math.floor((seconds % 86400) / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secs = seconds % 60;
+
+      daysEl.textContent = pad(days);
+      hoursEl.textContent = pad(hours);
+      minsEl.textContent = pad(minutes);
+      secsEl.textContent = pad(secs);
+
+      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+    }
+
+    const timer = setInterval(tick, 1000);
+    tick();
+  </script>
+</body>
+</html>
