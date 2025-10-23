@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Countdown to Oct 10, 9:00 AM</title>
+  <title>Countdown to Dec 11th</title>
   <style>
     :root {
       --overlay: rgba(0, 0, 0, 0.45); /* darkens gif so text is readable */
@@ -26,7 +26,7 @@
     .bg {
       position: fixed;
       inset: 0;
-      background: url('giphy.gif') center / 98% no-repeat fixed;
+      background: url('giphy2.gif') center / 98% no-repeat fixed;
       z-index: -2;
     }
 
@@ -127,7 +127,7 @@
   <script>
     // Target: October (month index 9 because Date months are 0-based)
     function getTarget(now = new Date()) {
-      let target = new Date(now.getFullYear(), 9, 10, 9, 0, 0, 0);
+      let target = new Date(now.getFullYear(), 11, 11, 0, 0, 0, 0);
       if (now > target) {
         // If we've passed this year's Oct 10, count down to next year's
         target = new Date(now.getFullYear() + 1, 9, 10, 9, 0, 0, 0);
