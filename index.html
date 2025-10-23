@@ -127,10 +127,10 @@
   <script>
     // Target: October (month index 9 because Date months are 0-based)
     function getTarget(now = new Date()) {
-      let target = new Date(now.getFullYear(), 11, 11, 0, 0, 0, 0);
+      let target = new Date(now.getFullYear(), 11, 12, 0, 0, 0, 0);
       if (now > target) {
         // If we've passed this year's Oct 10, count down to next year's
-        target = new Date(now.getFullYear() + 1, 9, 10, 9, 0, 0, 0);
+        target = new Date(now.getFullYear(), 0, 0, 0, 0, 0, 0);
       }
       return target;
     }
